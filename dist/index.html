@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#163a35" />
+    <title>AmMaJo · Hand practice</title>
+    <meta name="description" content="A focused, solo American Mahjong hand-practice tool." />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="tile-overrides.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <a class="brand" href="#practice" aria-label="AmMaJo practice home"><span class="brand-mark">AM</span><span>AmMaJo</span></a>
+        <nav aria-label="Main navigation">
+          <button class="nav-button is-active" data-view="practice">Practice</button>
+          <button class="nav-button" data-view="history">Progress</button>
+        </nav>
+        <label class="tile-set-picker">Tile set
+          <select id="tile-set" aria-label="Choose tile set">
+            <option value="garden">Garden</option><option value="clear">Clear</option><option value="ink">Ink</option><option value="blush">Blush</option><option value="night">Night</option><option value="contrast">Contrast</option>
+          </select>
+        </label>
+      </header>
+
+      <section id="practice" class="view is-active" aria-labelledby="practice-heading">
+        <div class="hero-row">
+          <div>
+            <p class="eyebrow">SOLO HAND PRACTICE</p>
+            <h1 id="practice-heading">Build your instinct,<br><em>one decision at a time.</em></h1>
+          </div>
+          <button id="new-session" class="button button-quiet">New practice</button>
+        </div>
+
+        <section id="start-card" class="start-card">
+          <div class="start-copy">
+            <p class="eyebrow">THE SIMPLIFIED LOOP</p>
+            <h2>Draw a hand. Shape it. See your progress.</h2>
+            <p>This is not a rules engine. It is a fast, private space to practice recognizing direction in an American Mahjong hand.</p>
+            <ul class="checklist">
+              <li>13-tile random opening hand</li><li>Three Charleston trade decisions</li><li>25 draw-and-discard rounds</li>
+            </ul>
+            <button id="start-practice" class="button">Start a practice hand <span aria-hidden="true">→</span></button>
+          </div>
+          <div class="starter-tiles" aria-hidden="true">
+            <div class="tile"><img class="tile-art preview-tile" data-asset="bam-3" alt="" /></div><div class="tile"><img class="tile-art preview-tile" data-asset="flower-1" alt="" /></div><div class="tile"><img class="tile-art preview-tile" data-asset="dot-7" alt="" /></div><div class="tile"><img class="tile-art preview-tile" data-asset="wind-north" alt="" /></div>
+          </div>
+        </section>
+
+        <section id="game" class="game hidden" aria-live="polite">
+          <div class="status-row">
+            <div><p id="phase-label" class="eyebrow">CHARLESTON · PASS 1 OF 3</p><h2 id="instruction">Choose 3 tiles to trade</h2></div>
+            <div class="session-meta"><span id="round-label">Before play</span><span id="timer">00:00</span></div>
+          </div>
+          <p id="helper-text" class="helper">Choose tiles that do not support the directions you want to keep. Jokers stay put.</p>
+
+          <div class="table-grid">
+            <section class="rack-panel" aria-labelledby="rack-heading">
+              <div class="panel-title"><h3 id="rack-heading">Your rack <span id="rack-count">13</span></h3><div class="rack-tools"><button id="auto-sort" class="text-button" type="button">Auto-sort</button><button id="sort-by-value" class="text-button" type="button" title="Group suited tiles by number across suits">By value</button><button id="mark-rejects" class="text-button" type="button" aria-pressed="false">Mark rejects</button><button id="customize-sort" class="text-button" type="button">Customize</button><button id="clear-selection" class="text-button" type="button">Clear</button></div></div>
+              <div id="rack" class="rack" aria-label="Your tiles"></div>
+            </section>
+            <aside class="side-panel">
+              <div class="round-card"><span class="mini-label">DECISIONS</span><strong id="decision-count">0</strong><span>made this hand</span></div>
+              <div class="round-card"><span class="mini-label">TILES LEFT</span><strong id="deck-count">139</strong><span>in practice pool</span></div>
+              <button id="declare-button" class="declare" disabled>Declare Mahjong</button>
+            </aside>
+          </div>
+
+          <section id="choice-zone" class="choice-zone hidden" aria-labelledby="choice-heading">
+            <div><p class="eyebrow">CHOOSE YOUR DRAW</p><h3 id="choice-heading">One tile is visible. One is hidden.</h3></div>
+            <div id="draw-options" class="draw-options"></div>
+          </section>
+
+          <div class="action-row">
+            <p id="selected-label">Select 3 tiles</p>
+            <button id="primary-action" class="button" disabled>Trade selected tiles</button>
+          </div>
+          <div id="discard-log" class="discard-log" aria-label="Discard history"></div>
+        </section>
+      </section>
+
+      <section id="history" class="view" aria-labelledby="history-heading">
+        <div class="hero-row"><div><p class="eyebrow">YOUR PRACTICE HISTORY</p><h1 id="history-heading">Notice the <em>trend.</em></h1></div><button id="clear-history" class="button button-quiet">Clear history</button></div>
+        <section class="metrics" aria-label="Practice summary">
+          <div class="metric"><span>Hands practiced</span><strong id="metric-hands">0</strong></div>
+          <div class="metric"><span>Mahjong declared</span><strong id="metric-mahjong">—</strong></div>
+          <div class="metric"><span>Avg. tiles away</span><strong id="metric-away">—</strong></div>
+          <div class="metric"><span>Avg. round time</span><strong id="metric-time">—</strong></div>
+        </section>
+        <section class="chart-grid">
+          <article class="chart-card"><div><p class="eyebrow">OUTCOMES</p><h2>Mahjong declarations</h2></div><div id="outcome-chart" class="outcome-chart chart-empty">Complete a hand to see your first chart.</div></article>
+          <article class="chart-card"><div><p class="eyebrow">DISTANCE</p><h2>Tiles away over time</h2></div><div id="distance-chart" class="bar-chart chart-empty">Your self-assessment will appear here.</div></article>
+          <article class="chart-card wide"><div><p class="eyebrow">PACE</p><h2>Average round time by hand</h2></div><div id="time-chart" class="bar-chart chart-empty">Timing begins with your first practice hand.</div></article>
+        </section>
+        <p class="history-note">History lives only in this browser. “Tiles away” is your self-assessment—not official Mahjong scoring. Tile art: Joker &amp; Bloom, MIT License.</p>
+      </section>
+    </main>
+
+    <dialog id="score-dialog">
+      <form method="dialog" id="score-form">
+        <p class="eyebrow">HAND COMPLETE</p><h2 id="score-title">How close were you?</h2>
+        <p id="score-copy">Record your own estimate. This helps you see your practice trend, not validate a legal hand.</p>
+        <label for="tiles-away">Tiles from Mahjong <span id="away-value">0</span></label>
+        <input id="tiles-away" type="range" min="0" max="13" value="0" />
+        <div class="dialog-actions"><button value="cancel" class="button button-quiet">Keep practicing</button><button id="save-score" value="default" class="button">Save hand</button></div>
+      </form>
+    </dialog>
+    <dialog id="sort-dialog">
+      <form method="dialog" id="sort-form">
+        <p class="eyebrow">RACK SORTER</p>
+        <h2>Build your sort order</h2>
+        <p>Drag enabled groups into priority order. Unmatched tiles stay after the enabled groups.</p>
+        <div id="sort-rules" class="sort-rules" aria-label="Sortable tile groups"></div>
+        <p class="sort-note">Known reject marks apply only to the current hand and reset when you start another.</p>
+        <div class="dialog-actions"><button value="cancel" class="button button-quiet">Cancel</button><button id="apply-sort" value="default" class="button">Apply &amp; sort</button></div>
+      </form>
+    </dialog>
+    <script src="app.js"></script>
+  </body>
+</html>
