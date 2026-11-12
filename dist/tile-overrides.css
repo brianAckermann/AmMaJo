@@ -26,7 +26,8 @@
 .rack-tools .text-button { font-size: .75rem; padding: 6px 7px; }
 .rack-tools .text-button.is-active { color: #9c3832; font-weight: 800; background: #f7d9d4; border-radius: 7px; }
 .sort-rules { display: grid; gap: 7px; margin-top: 20px; overscroll-behavior: contain; }
-.sort-rule { display: flex; align-items: center; gap: 10px; min-height: 42px; padding: 9px 11px; border: 1px solid var(--line); border-radius: 10px; background: var(--cream); }
+.sort-rule { display: flex; align-items: center; gap: 10px; min-height: 42px; padding: 9px 11px; border: 1px solid var(--line); border-radius: 10px; background: var(--cream); cursor: grab; touch-action: none; }
+.sort-rule:active { cursor: grabbing; }
 .sort-rule.dragging-rule { opacity: .45; }
 .sort-rule.drag-target { border-color: var(--orange); box-shadow: 0 -3px 0 var(--orange); }
 .sort-rule label { display: flex; align-items: center; gap: 7px; flex: 1; margin: 0; font-size: .9rem; cursor: pointer; }

@@ -103,7 +103,7 @@ function tileElement(tile, { selectable = false, facedown = false } = {}) {
   button.className = `tile ${tile.type}${tile.type === "dragon" ? ` dragon-${tile.name}` : ""}${facedown ? " face-down" : ""}${state.selected.includes(tile.id) ? " selected" : ""}`;
   button.setAttribute("aria-label", facedown ? "Face-down draw" : tileName(tile));
   if (selectable) button.type = "button";
-  button.innerHTML = `<img class="tile-art" src="${facedown ? `assets/joker-bloom/${tileSet}/back.svg?v=20261111e` : tileAssetPath(tile)}" alt="" />`;
+  button.innerHTML = `<img class="tile-art" src="${facedown ? `assets/joker-bloom/${tileSet}/back.svg?v=20261111f` : tileAssetPath(tile)}" alt="" />`;
   return button;
 }
 
@@ -258,28 +258,28 @@ function renderSortRules() {
     const grip = item.querySelector(".sort-grip");
     const finishPointerSort = (event) => {
       if (state.draggedRuleId !== rule.id) return;
-      if (grip.hasPointerCapture(event.pointerId)) grip.releasePointerCapture(event.pointerId);
+      if (item.hasPointerCapture(event.pointerId)) item.releasePointerCapture(event.pointerId);
       const order = [...holder.querySelectorAll(".sort-rule")].map((element) => element.dataset.ruleId);
       sortRules.sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
       state.draggedRuleId = null; document.body.classList.remove("sorting-rules");
       document.querySelectorAll(".drag-target,.dragging-rule").forEach((element) => element.classList.remove("drag-target", "dragging-rule"));
     };
-    grip.addEventListener("pointerdown", (event) => {
+    item.addEventListener("pointerdown", (event) => {
       if (!event.isPrimary || (event.pointerType === "mouse" && event.button !== 0)) return;
-      event.preventDefault(); state.draggedRuleId = rule.id; grip.setPointerCapture(event.pointerId);
+      if (event.target.closest("input,button")) return;
+      event.preventDefault(); state.draggedRuleId = rule.id; item.setPointerCapture(event.pointerId);
       item.classList.add("dragging-rule"); document.body.classList.add("sorting-rules");
     });
-    grip.addEventListener("pointermove", (event) => {
+    item.addEventListener("pointermove", (event) => {
       if (state.draggedRuleId !== rule.id) return;
       event.preventDefault();
-      const target = document.elementsFromPoint(event.clientX, event.clientY).map((element) => element.closest(".sort-rule")).find((candidate) => candidate && candidate !== item && candidate.parentElement === holder);
-      if (!target || target === item || target.parentElement !== holder) return;
-      const rect = target.getBoundingClientRect();
-      holder.insertBefore(item, event.clientY < rect.top + rect.height / 2 ? target : target.nextSibling);
-      document.querySelectorAll(".drag-target").forEach((element) => element.classList.remove("drag-target")); target.classList.add("drag-target");
+      const siblings = [...holder.querySelectorAll(".sort-rule")].filter((candidate) => candidate !== item);
+      const target = siblings.find((candidate) => { const rect = candidate.getBoundingClientRect(); return event.clientY < rect.top + rect.height / 2; });
+      holder.insertBefore(item, target || null);
+      document.querySelectorAll(".drag-target").forEach((element) => element.classList.remove("drag-target")); if (target) target.classList.add("drag-target");
     });
-    grip.addEventListener("pointerup", finishPointerSort);
-    grip.addEventListener("pointercancel", finishPointerSort);
+    item.addEventListener("pointerup", finishPointerSort);
+    item.addEventListener("pointercancel", finishPointerSort);
     grip.addEventListener("keydown", (event) => {
       if (!["ArrowUp", "ArrowDown"].includes(event.key)) return;
       event.preventDefault(); moveSortRule(rule.id, event.key === "ArrowUp" ? -1 : 1);
