@@ -10,6 +10,13 @@
 .draw-options { gap: 8px; flex: none; }
 .face-down { background: transparent; border: 0; outline: 0; }
 .face-down > * { visibility: visible; }
+.table-panel { padding: 22px; background: #e6ede5; border-radius: 17px; min-height: 150px; }
+.table-heading { margin-bottom: 10px; }
+.table-panel > .action-row { margin-top: 10px; padding-top: 12px; }
+.table-panel > .rack-panel { margin-top: 14px; padding: 14px; background: #f4f8f1; border: 1px solid #cad6ca; min-height: 0; }
+.game.is-choosing-draw .action-row { display: none; }
+.draw-option { display: grid; justify-items: center; gap: 4px; }
+.draw-caption { color: var(--muted); font-size: .68rem; font-weight: 750; }
 .rack .tile { cursor: grab; }
 .rack .tile:active { cursor: grabbing; }
 .rack .tile.is-new { outline: 3px solid var(--yellow); outline-offset: 2px; animation: new-tile .8s ease-in-out infinite alternate; }
@@ -36,4 +43,4 @@
 @keyframes new-tile { to { box-shadow: 0 0 0 6px #f4ca5c33; } }
 .tile-set-picker { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: .72rem; font-weight: 750; }
 .tile-set-picker select { border: 1px solid var(--line); border-radius: 8px; background: var(--cream); color: var(--ink); font: inherit; padding: 6px 24px 6px 8px; }
-@media(max-width:720px) { .topbar { flex-wrap: wrap; } .tile-set-picker { order: 3; width: 100%; margin-top: 6px; } .game { padding: 14px; } .rack-panel { padding: 10px; } .rack { gap: 3px; } .tile { width: min(62px, calc((100vw - 78px) / 4)); height: auto; aspect-ratio: 3 / 4; } .choice-zone { align-items: flex-start; flex-direction: column; gap: 10px; padding: 12px; } .choice-zone h3 { font-size: .95rem; } .draw-options { gap: 6px; } .game.is-choosing-draw .side-panel, .game.is-choosing-draw .action-row { display: none; } .panel-title { align-items: flex-start; gap: 8px; } .rack-tools { justify-content: flex-start; } dialog { max-height: calc(100dvh - 24px); overflow-y: auto; overscroll-behavior: contain; } dialog form { padding: 24px; } }
+@media(max-width:720px) { .topbar { flex-wrap: wrap; } .tile-set-picker { order: 3; width: 100%; margin-top: 6px; } .game { padding: 14px; } .table-panel { padding: 10px; } .table-panel > .rack-panel { padding: 10px; } .rack { gap: 3px; } .tile { width: min(62px, calc((100vw - 98px) / 4)); height: auto; aspect-ratio: 3 / 4; } .choice-zone { align-items: flex-start; flex-direction: column; gap: 10px; padding: 12px; } .choice-zone h3 { font-size: .95rem; } .draw-options { gap: 10px; } .table-panel > .action-row { align-items: stretch; flex-direction: column; gap: 6px; } .table-panel > .action-row p { margin: 0; } .table-panel > .action-row .button { align-self: flex-start; } .game.is-choosing-draw .side-panel { display: none; } .panel-title { align-items: flex-start; gap: 8px; } .rack-tools { justify-content: flex-start; } dialog { max-height: calc(100dvh - 24px); overflow-y: auto; overscroll-behavior: contain; } dialog form { padding: 24px; } }

@@ -6,8 +6,8 @@
     <meta name="theme-color" content="#163a35" />
     <title>AmMaJo · Hand practice</title>
     <meta name="description" content="A focused, solo American Mahjong hand-practice tool." />
-    <link rel="stylesheet" href="styles.css" />
-    <link rel="stylesheet" href="tile-overrides.css" />
+    <link rel="stylesheet" href="styles.css?v=20261111d" />
+    <link rel="stylesheet" href="tile-overrides.css?v=20261111d" />
   </head>
   <body>
     <main class="shell">
@@ -56,13 +56,20 @@
           <p id="helper-text" class="helper">Choose tiles that do not support the directions you want to keep. Jokers stay put.</p>
 
           <div class="table-grid">
-            <section class="rack-panel" aria-labelledby="rack-heading">
-              <div class="panel-title"><h3 id="rack-heading">Your rack <span id="rack-count">13</span></h3><div class="rack-tools"><button id="auto-sort" class="text-button" type="button">Auto-sort</button><button id="sort-by-value" class="text-button" type="button" title="Group suited tiles by number across suits">By value</button><button id="mark-rejects" class="text-button" type="button" aria-pressed="false">Mark rejects</button><button id="customize-sort" class="text-button" type="button">Customize</button><button id="clear-selection" class="text-button" type="button">Clear</button></div></div>
+            <section class="table-panel" aria-labelledby="table-heading">
+              <p id="table-heading" class="eyebrow table-heading">TABLE</p>
               <section id="choice-zone" class="choice-zone hidden" aria-labelledby="choice-heading">
-                <div><p class="eyebrow">CHOOSE YOUR DRAW</p><h3 id="choice-heading">One tile is visible. One is hidden.</h3></div>
+                <div><p class="eyebrow">NEXT ACTION</p><h3 id="choice-heading">Claim the discard or draw from the wall.</h3></div>
                 <div id="draw-options" class="draw-options"></div>
               </section>
-              <div id="rack" class="rack" aria-label="Your tiles"></div>
+              <div class="action-row">
+                <p id="selected-label">Select 3 tiles</p>
+                <button id="primary-action" class="button" disabled>Trade selected tiles</button>
+              </div>
+              <section class="rack-panel" aria-labelledby="rack-heading">
+                <div class="panel-title"><h3 id="rack-heading">Your rack <span id="rack-count">13</span></h3><div class="rack-tools"><button id="auto-sort" class="text-button" type="button">Auto-sort</button><button id="sort-by-value" class="text-button" type="button" title="Group suited tiles by number across suits">By value</button><button id="mark-rejects" class="text-button" type="button" aria-pressed="false">Mark rejects</button><button id="customize-sort" class="text-button" type="button">Customize</button><button id="clear-selection" class="text-button" type="button">Clear</button></div></div>
+                <div id="rack" class="rack" aria-label="Your tiles"></div>
+              </section>
             </section>
             <aside class="side-panel">
               <div class="round-card"><span class="mini-label">DECISIONS</span><strong id="decision-count">0</strong><span>made this hand</span></div>
@@ -71,10 +78,6 @@
             </aside>
           </div>
 
-          <div class="action-row">
-            <p id="selected-label">Select 3 tiles</p>
-            <button id="primary-action" class="button" disabled>Trade selected tiles</button>
-          </div>
           <div id="discard-log" class="discard-log" aria-label="Discard history"></div>
         </section>
       </section>
@@ -115,6 +118,6 @@
         <div class="dialog-actions"><button value="cancel" class="button button-quiet">Cancel</button><button id="apply-sort" value="default" class="button">Apply &amp; sort</button></div>
       </form>
     </dialog>
-    <script src="app.js"></script>
+    <script src="app.js?v=20261111d"></script>
   </body>
 </html>

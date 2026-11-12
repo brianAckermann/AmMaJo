@@ -103,7 +103,7 @@ function tileElement(tile, { selectable = false, facedown = false } = {}) {
   button.className = `tile ${tile.type}${tile.type === "dragon" ? ` dragon-${tile.name}` : ""}${facedown ? " face-down" : ""}${state.selected.includes(tile.id) ? " selected" : ""}`;
   button.setAttribute("aria-label", facedown ? "Face-down draw" : tileName(tile));
   if (selectable) button.type = "button";
-  button.innerHTML = `<img class="tile-art" src="${facedown ? `assets/joker-bloom/${tileSet}/back.svg` : tileAssetPath(tile)}" alt="" />`;
+  button.innerHTML = `<img class="tile-art" src="${facedown ? `assets/joker-bloom/${tileSet}/back.svg?v=20261111d` : tileAssetPath(tile)}" alt="" />`;
   return button;
 }
 
@@ -168,8 +168,8 @@ function renderPhase() {
     return;
   }
   if (state.phase === "choose") {
-    label.textContent = `ROUND ${state.round} OF 25 · CHOOSE A DRAW`; instruction.textContent = "Pick one of the two tiles"; helper.textContent = state.choices[0]?.tile.type === "joker" ? "A discarded Joker cannot be claimed. Take the face-down draw instead." : "The unused practice tile returns to the pool. Then choose one tile from your rack to discard.";
-    selected.textContent = "Choose a draw to continue"; action.classList.add("hidden"); choiceZone.classList.remove("hidden"); renderChoices(); return;
+    label.textContent = `ROUND ${state.round} OF 25 · TABLE`; instruction.textContent = "Claim or draw"; helper.textContent = state.choices[0]?.tile.type === "joker" ? "A discarded Joker cannot be claimed. Draw the next tile from the wall." : "Claim the face-up discard if it helps your hand, or draw the next tile from the wall.";
+    selected.textContent = "Claim or draw to continue"; action.classList.add("hidden"); choiceZone.classList.remove("hidden"); renderChoices(); return;
   }
   label.textContent = `ROUND ${state.round} OF 25 · DISCARD`; instruction.textContent = "Choose one tile to discard"; helper.textContent = "Your discard is kept face up in this practice record.";
   selected.textContent = `${state.selected.length ? tileName(state.hand.find((t) => t.id === state.selected[0])) : "Select one tile"} ${state.selected.length ? "ready to discard" : ""}`; action.classList.remove("hidden"); action.textContent = state.round === 25 ? "Finish practice hand" : "Discard & next round"; action.disabled = state.selected.length !== 1;
@@ -179,8 +179,11 @@ function renderChoices() {
   const holder = $("#draw-options"); holder.innerHTML = "";
   state.choices.forEach((choice) => {
     const element = tileElement(choice.tile, { selectable: true, facedown: !choice.faceup });
+    const option = document.createElement("div"); option.className = "draw-option";
+    element.setAttribute("aria-label", choice.faceup ? `Claim ${tileName(choice.tile)} discard` : "Draw from wall");
     if (!choice.claimable) { element.disabled = true; element.classList.add("unavailable"); element.title = "A discarded Joker cannot be claimed"; }
-    element.addEventListener("click", () => chooseDraw(choice.tile.id)); holder.append(element);
+    element.addEventListener("click", () => chooseDraw(choice.tile.id));
+    option.append(element, Object.assign(document.createElement("span"), { className: "draw-caption", textContent: choice.faceup ? "Discard" : "Wall" })); holder.append(option);
   });
 }
 
@@ -206,7 +209,7 @@ function doTrade() {
 function openChoices() { const faceup = draw(); state.newTileIds = new Set(); state.roundStartedAt = Date.now(); state.choices = [{ tile: faceup, faceup: true, claimable: faceup.type !== "joker" }, { tile: draw(), faceup: false, claimable: true }]; }
 function chooseDraw(id) {
   const picked = state.choices.find((choice) => choice.tile.id === id); if (!picked?.claimable) return;
-  const unused = state.choices.find((choice) => choice.tile.id !== id); state.hand.push(picked.tile); state.newTileIds = new Set([picked.tile.id]); if (unused.faceup && unused.tile.type === "joker") state.discards.push(unused.tile); else state.deck.unshift(unused.tile); state.choices = []; state.phase = "discard"; state.selected = []; state.decisions += 1; render();
+  const unused = state.choices.find((choice) => choice.tile.id !== id); state.hand.push(picked.tile); state.newTileIds = new Set([picked.tile.id]); if (unused.faceup) state.discards.push(unused.tile); else state.deck.unshift(unused.tile); state.choices = []; state.phase = "discard"; state.selected = []; state.decisions += 1; render();
 }
 function doDiscard() {
   const id = state.selected[0]; const tile = state.hand.find((item) => item.id === id); state.hand = state.hand.filter((item) => item.id !== id); state.discards.push(tile); state.selected = []; state.decisions += 1;
