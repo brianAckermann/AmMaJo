@@ -103,7 +103,7 @@ function tileElement(tile, { selectable = false, facedown = false } = {}) {
   button.className = `tile ${tile.type}${tile.type === "dragon" ? ` dragon-${tile.name}` : ""}${facedown ? " face-down" : ""}${state.selected.includes(tile.id) ? " selected" : ""}`;
   button.setAttribute("aria-label", facedown ? "Face-down draw" : tileName(tile));
   if (selectable) button.type = "button";
-  button.innerHTML = `<img class="tile-art" src="${tileAssetPath(tile)}" alt="" />`;
+  button.innerHTML = `<img class="tile-art" src="${facedown ? `assets/joker-bloom/${tileSet}/back.svg` : tileAssetPath(tile)}" alt="" />`;
   return button;
 }
 
@@ -158,6 +158,7 @@ function reorderTileAt(fromId, insertionIndex) {
 
 function renderPhase() {
   const label = $("#phase-label"), instruction = $("#instruction"), helper = $("#helper-text"), action = $("#primary-action"), selected = $("#selected-label"), choiceZone = $("#choice-zone");
+  $("#game").classList.toggle("is-choosing-draw", state.phase === "choose");
   choiceZone.classList.add("hidden");
   if (state.phase === "charleston") {
     const directions = ["RIGHT", "ACROSS", "LEFT"];
