@@ -254,7 +254,7 @@ function renderSortRules() {
       document.querySelectorAll(".drag-target,.dragging-rule").forEach((element) => element.classList.remove("drag-target", "dragging-rule"));
     };
     grip.addEventListener("pointerdown", (event) => {
-      if (event.pointerType === "mouse" && event.button !== 0) return;
+      if (event.pointerType === "mouse") return;
       event.preventDefault(); state.draggedRuleId = rule.id; grip.setPointerCapture(event.pointerId);
       item.classList.add("dragging-rule"); document.body.classList.add("sorting-rules");
     });
