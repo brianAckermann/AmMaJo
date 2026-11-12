@@ -39,7 +39,7 @@
 .sort-actions { display: flex; gap: 4px; }
 .sort-move { display: grid; place-items: center; width: 30px; height: 30px; border: 1px solid var(--line); border-radius: 7px; background: var(--cream); color: var(--ink); font: 800 1rem/1 system-ui; cursor: pointer; }
 .sort-move:hover { border-color: var(--orange); color: var(--orange); }
-.sorting-rules { overflow: hidden; touch-action: none; }
+html:has(#sort-dialog[open]), body:has(#sort-dialog[open]) { overflow: hidden; }
 .sort-note { font-size: .76rem; margin-top: 16px; }
 .draw-options .tile.unavailable { cursor: not-allowed; filter: grayscale(.8); opacity: .55; }
 .rack .tile.dragging { opacity: .35; }

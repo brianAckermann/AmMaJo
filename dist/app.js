@@ -248,6 +248,11 @@ function moveSortRule(ruleId, offset) {
   requestAnimationFrame(() => $("#sort-rules").querySelector(`[data-rule-id="${ruleId}"] .sort-grip`)?.focus());
 }
 
+function clearSortDragState() {
+  state.draggedRuleId = null; document.body.classList.remove("sorting-rules");
+  document.querySelectorAll(".drag-target,.dragging-rule").forEach((element) => element.classList.remove("drag-target", "dragging-rule"));
+}
+
 function renderSortRules() {
   const holder = $("#sort-rules"); holder.innerHTML = "";
   sortRules.forEach((rule) => {
@@ -261,14 +266,13 @@ function renderSortRules() {
       if (item.hasPointerCapture(event.pointerId)) item.releasePointerCapture(event.pointerId);
       const order = [...holder.querySelectorAll(".sort-rule")].map((element) => element.dataset.ruleId);
       sortRules.sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
-      state.draggedRuleId = null; document.body.classList.remove("sorting-rules");
-      document.querySelectorAll(".drag-target,.dragging-rule").forEach((element) => element.classList.remove("drag-target", "dragging-rule"));
+      clearSortDragState();
     };
     item.addEventListener("pointerdown", (event) => {
       if (!event.isPrimary || (event.pointerType === "mouse" && event.button !== 0)) return;
       if (event.target.closest("input,button")) return;
       event.preventDefault(); state.draggedRuleId = rule.id; item.setPointerCapture(event.pointerId);
-      item.classList.add("dragging-rule"); document.body.classList.add("sorting-rules");
+      item.classList.add("dragging-rule");
     });
     item.addEventListener("pointermove", (event) => {
       if (state.draggedRuleId !== rule.id) return;
@@ -293,6 +297,7 @@ $("#auto-sort").addEventListener("click", applyAutoSort);
 $("#sort-by-value").addEventListener("click", sortByValue);
 $("#mark-rejects").addEventListener("click", () => { state.rejectMode = !state.rejectMode; state.selected = []; render(); });
 $("#customize-sort").addEventListener("click", () => { renderSortRules(); $("#sort-dialog").showModal(); });
+$("#sort-dialog").addEventListener("close", clearSortDragState);
 $("#sort-form").addEventListener("submit", (event) => { if (event.submitter?.id !== "apply-sort") return; event.preventDefault(); saveSortRules(); $("#sort-dialog").close(); applyAutoSort(); });
 $("#tiles-away").addEventListener("input", (event) => { $("#away-value").textContent = event.target.value; }); $("#score-form").addEventListener("submit", (event) => { if (event.submitter.value === "cancel") { event.preventDefault(); $("#score-dialog").close(); state.phase = "discard"; startTimer(); render(); } else { event.preventDefault(); saveScore(); } });
 document.querySelectorAll(".nav-button").forEach((button) => button.addEventListener("click", () => { document.querySelectorAll(".nav-button").forEach((item) => item.classList.toggle("is-active", item === button)); document.querySelectorAll(".view").forEach((view) => view.classList.toggle("is-active", view.id === button.dataset.view)); if (button.dataset.view === "history") renderHistory(); }));
