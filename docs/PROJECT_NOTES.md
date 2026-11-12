@@ -25,6 +25,7 @@ AmMaJo is a private, browser-first American Mahjong hand-practice tool. It helps
 - Real multiplayer play, calls/exposures, opponent simulation, and official scoring.
 - NMJL-card pattern data or validation; do not reproduce a current card without appropriate rights.
 - More tile artwork exploration, richer decision explanations, and long-term/cloud-synced history.
+- Touch-based manual rack reordering. Desktop tile dragging remains available, but mobile work is deferred because configurable Auto-sort is the primary rack-ordering mechanism.
 - Automated tests and a formal build/dev command. For now, use `node --check dist/app.js` and open `dist/index.html` through a static server for manual QA.
 
 ## Hosting

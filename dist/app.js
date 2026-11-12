@@ -241,8 +241,41 @@ function renderSortRules() {
   const holder = $("#sort-rules"); holder.innerHTML = "";
   sortRules.forEach((rule) => {
     const item = document.createElement("div"); item.className = "sort-rule"; item.draggable = true; item.dataset.ruleId = rule.id;
-    item.innerHTML = `<span class="sort-grip" aria-hidden="true">⠿</span><label><input type="checkbox" ${rule.enabled ? "checked" : ""} /> <span>${rule.label}</span></label>`;
+    item.innerHTML = `<span class="sort-grip" aria-label="Drag ${rule.label} to reorder" role="button" tabindex="0">⠿</span><label><input type="checkbox" ${rule.enabled ? "checked" : ""} /> <span>${rule.label}</span></label>`;
     item.querySelector("input").addEventListener("change", (event) => { rule.enabled = event.target.checked; });
+    const grip = item.querySelector(".sort-grip");
+    const finishPointerSort = (event) => {
+      if (state.draggedRuleId !== rule.id) return;
+      if (grip.hasPointerCapture(event.pointerId)) grip.releasePointerCapture(event.pointerId);
+      const order = [...holder.querySelectorAll(".sort-rule")].map((element) => element.dataset.ruleId);
+      sortRules.sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
+      state.draggedRuleId = null; document.body.classList.remove("sorting-rules");
+      document.querySelectorAll(".drag-target,.dragging-rule").forEach((element) => element.classList.remove("drag-target", "dragging-rule"));
+    };
+    grip.addEventListener("pointerdown", (event) => {
+      if (event.pointerType === "mouse" && event.button !== 0) return;
+      event.preventDefault(); state.draggedRuleId = rule.id; grip.setPointerCapture(event.pointerId);
+      item.classList.add("dragging-rule"); document.body.classList.add("sorting-rules");
+    });
+    grip.addEventListener("pointermove", (event) => {
+      if (state.draggedRuleId !== rule.id) return;
+      event.preventDefault();
+      const target = document.elementFromPoint(event.clientX, event.clientY)?.closest(".sort-rule");
+      if (!target || target === item || target.parentElement !== holder) return;
+      const rect = target.getBoundingClientRect();
+      holder.insertBefore(item, event.clientY < rect.top + rect.height / 2 ? target : target.nextSibling);
+      document.querySelectorAll(".drag-target").forEach((element) => element.classList.remove("drag-target")); target.classList.add("drag-target");
+    });
+    grip.addEventListener("pointerup", finishPointerSort);
+    grip.addEventListener("pointercancel", finishPointerSort);
+    grip.addEventListener("keydown", (event) => {
+      if (!["ArrowUp", "ArrowDown"].includes(event.key)) return;
+      event.preventDefault(); const from = sortRules.findIndex((candidate) => candidate.id === rule.id);
+      const to = Math.max(0, Math.min(sortRules.length - 1, from + (event.key === "ArrowUp" ? -1 : 1)));
+      if (from === to) return;
+      const [moved] = sortRules.splice(from, 1); sortRules.splice(to, 0, moved); renderSortRules();
+      holder.querySelector(`[data-rule-id="${rule.id}"] .sort-grip`)?.focus();
+    });
     item.addEventListener("dragstart", (event) => { state.draggedRuleId = rule.id; event.dataTransfer.effectAllowed = "move"; requestAnimationFrame(() => item.classList.add("dragging-rule")); });
     item.addEventListener("dragend", () => { state.draggedRuleId = null; document.querySelectorAll(".drag-target,.dragging-rule").forEach((element) => element.classList.remove("drag-target", "dragging-rule")); });
     item.addEventListener("dragover", (event) => { event.preventDefault(); document.querySelectorAll(".drag-target").forEach((element) => element.classList.remove("drag-target")); item.classList.add("drag-target"); });
