@@ -103,7 +103,7 @@ function tileElement(tile, { selectable = false, facedown = false } = {}) {
   button.className = `tile ${tile.type}${tile.type === "dragon" ? ` dragon-${tile.name}` : ""}${facedown ? " face-down" : ""}${state.selected.includes(tile.id) ? " selected" : ""}`;
   button.setAttribute("aria-label", facedown ? "Face-down draw" : tileName(tile));
   if (selectable) button.type = "button";
-  button.innerHTML = `<img class="tile-art" src="${facedown ? `assets/joker-bloom/${tileSet}/back.svg?v=20261111d` : tileAssetPath(tile)}" alt="" />`;
+  button.innerHTML = `<img class="tile-art" src="${facedown ? `assets/joker-bloom/${tileSet}/back.svg?v=20261111e` : tileAssetPath(tile)}" alt="" />`;
   return button;
 }
 
@@ -241,12 +241,20 @@ function renderStarterPreviews() { document.querySelectorAll(".preview-tile").fo
 function outcomeItem(label, count, max) { return `<div class="outcome-item"><div class="outcome-bar" style="height:${Math.max(12, count / max * 105)}px">${count}</div><span>${label}</span></div>`; }
 function bars(history, key, max, suffix) { return history.slice(-12).map((item, index) => { const value = item[key]; const height = Math.max(7, value / max * 116); const show = key === "avgRound" ? Math.round(value) : value; return `<div class="bar-unit" style="height:${height}px"><b>${show}${suffix}</b><span>${history.length - Math.min(history.length, 12) + index + 1}</span></div>`; }).join(""); }
 
+function moveSortRule(ruleId, offset) {
+  const from = sortRules.findIndex((candidate) => candidate.id === ruleId); const to = Math.max(0, Math.min(sortRules.length - 1, from + offset));
+  if (from < 0 || from === to) return;
+  const [moved] = sortRules.splice(from, 1); sortRules.splice(to, 0, moved); renderSortRules();
+  requestAnimationFrame(() => $("#sort-rules").querySelector(`[data-rule-id="${ruleId}"] .sort-grip`)?.focus());
+}
+
 function renderSortRules() {
   const holder = $("#sort-rules"); holder.innerHTML = "";
   sortRules.forEach((rule) => {
-    const item = document.createElement("div"); item.className = "sort-rule"; item.draggable = true; item.dataset.ruleId = rule.id;
-    item.innerHTML = `<span class="sort-grip" aria-label="Drag ${rule.label} to reorder" role="button" tabindex="0">⠿</span><label><input type="checkbox" ${rule.enabled ? "checked" : ""} /> <span>${rule.label}</span></label>`;
+    const item = document.createElement("div"); item.className = "sort-rule"; item.dataset.ruleId = rule.id;
+    item.innerHTML = `<span class="sort-grip" aria-label="Drag ${rule.label} to reorder" role="button" tabindex="0">⠿</span><label><input type="checkbox" ${rule.enabled ? "checked" : ""} /> <span>${rule.label}</span></label><span class="sort-actions"><button type="button" class="sort-move" data-offset="-1" aria-label="Move ${rule.label} up">↑</button><button type="button" class="sort-move" data-offset="1" aria-label="Move ${rule.label} down">↓</button></span>`;
     item.querySelector("input").addEventListener("change", (event) => { rule.enabled = event.target.checked; });
+    item.querySelectorAll(".sort-move").forEach((button) => button.addEventListener("click", () => moveSortRule(rule.id, Number(button.dataset.offset))));
     const grip = item.querySelector(".sort-grip");
     const finishPointerSort = (event) => {
       if (state.draggedRuleId !== rule.id) return;
@@ -257,14 +265,14 @@ function renderSortRules() {
       document.querySelectorAll(".drag-target,.dragging-rule").forEach((element) => element.classList.remove("drag-target", "dragging-rule"));
     };
     grip.addEventListener("pointerdown", (event) => {
-      if (event.pointerType === "mouse") return;
+      if (!event.isPrimary || (event.pointerType === "mouse" && event.button !== 0)) return;
       event.preventDefault(); state.draggedRuleId = rule.id; grip.setPointerCapture(event.pointerId);
       item.classList.add("dragging-rule"); document.body.classList.add("sorting-rules");
     });
     grip.addEventListener("pointermove", (event) => {
       if (state.draggedRuleId !== rule.id) return;
       event.preventDefault();
-      const target = document.elementFromPoint(event.clientX, event.clientY)?.closest(".sort-rule");
+      const target = document.elementsFromPoint(event.clientX, event.clientY).map((element) => element.closest(".sort-rule")).find((candidate) => candidate && candidate !== item && candidate.parentElement === holder);
       if (!target || target === item || target.parentElement !== holder) return;
       const rect = target.getBoundingClientRect();
       holder.insertBefore(item, event.clientY < rect.top + rect.height / 2 ? target : target.nextSibling);
@@ -274,19 +282,7 @@ function renderSortRules() {
     grip.addEventListener("pointercancel", finishPointerSort);
     grip.addEventListener("keydown", (event) => {
       if (!["ArrowUp", "ArrowDown"].includes(event.key)) return;
-      event.preventDefault(); const from = sortRules.findIndex((candidate) => candidate.id === rule.id);
-      const to = Math.max(0, Math.min(sortRules.length - 1, from + (event.key === "ArrowUp" ? -1 : 1)));
-      if (from === to) return;
-      const [moved] = sortRules.splice(from, 1); sortRules.splice(to, 0, moved); renderSortRules();
-      holder.querySelector(`[data-rule-id="${rule.id}"] .sort-grip`)?.focus();
-    });
-    item.addEventListener("dragstart", (event) => { state.draggedRuleId = rule.id; event.dataTransfer.effectAllowed = "move"; requestAnimationFrame(() => item.classList.add("dragging-rule")); });
-    item.addEventListener("dragend", () => { state.draggedRuleId = null; document.querySelectorAll(".drag-target,.dragging-rule").forEach((element) => element.classList.remove("drag-target", "dragging-rule")); });
-    item.addEventListener("dragover", (event) => { event.preventDefault(); document.querySelectorAll(".drag-target").forEach((element) => element.classList.remove("drag-target")); item.classList.add("drag-target"); });
-    item.addEventListener("drop", (event) => {
-      event.preventDefault(); const from = sortRules.findIndex((candidate) => candidate.id === state.draggedRuleId); const to = sortRules.findIndex((candidate) => candidate.id === rule.id);
-      if (from >= 0 && to >= 0 && from !== to) { const [moved] = sortRules.splice(from, 1); sortRules.splice(to, 0, moved); }
-      state.draggedRuleId = null; renderSortRules();
+      event.preventDefault(); moveSortRule(rule.id, event.key === "ArrowUp" ? -1 : 1);
     });
     holder.append(item);
   });

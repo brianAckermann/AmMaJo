@@ -26,13 +26,16 @@
 .rack-tools .text-button { font-size: .75rem; padding: 6px 7px; }
 .rack-tools .text-button.is-active { color: #9c3832; font-weight: 800; background: #f7d9d4; border-radius: 7px; }
 .sort-rules { display: grid; gap: 7px; margin-top: 20px; overscroll-behavior: contain; }
-.sort-rule { display: flex; align-items: center; gap: 10px; min-height: 42px; padding: 9px 11px; border: 1px solid var(--line); border-radius: 10px; background: var(--cream); cursor: grab; }
+.sort-rule { display: flex; align-items: center; gap: 10px; min-height: 42px; padding: 9px 11px; border: 1px solid var(--line); border-radius: 10px; background: var(--cream); }
 .sort-rule.dragging-rule { opacity: .45; }
 .sort-rule.drag-target { border-color: var(--orange); box-shadow: 0 -3px 0 var(--orange); }
 .sort-rule label { display: flex; align-items: center; gap: 7px; flex: 1; margin: 0; font-size: .9rem; cursor: pointer; }
 .sort-rule input { width: auto; accent-color: var(--orange); }
 .sort-grip { color: var(--muted); font-size: 1.25rem; letter-spacing: -3px; transform: rotate(90deg); cursor: grab; touch-action: none; padding: 6px 8px; margin: -6px -3px; }
 .sort-grip:active { cursor: grabbing; }
+.sort-actions { display: flex; gap: 4px; }
+.sort-move { display: grid; place-items: center; width: 30px; height: 30px; border: 1px solid var(--line); border-radius: 7px; background: var(--cream); color: var(--ink); font: 800 1rem/1 system-ui; cursor: pointer; }
+.sort-move:hover { border-color: var(--orange); color: var(--orange); }
 .sorting-rules { overflow: hidden; touch-action: none; }
 .sort-note { font-size: .76rem; margin-top: 16px; }
 .draw-options .tile.unavailable { cursor: not-allowed; filter: grayscale(.8); opacity: .55; }
