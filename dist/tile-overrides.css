@@ -11,6 +11,8 @@
 .face-down { background: transparent; border: 0; outline: 0; }
 .face-down > * { visibility: visible; }
 .table-panel { padding: 22px; background: #e6ede5; border-radius: 17px; min-height: 150px; }
+.table-stack { display: grid; gap: 10px; }
+.table-stack > .declare { margin: 0; width: 100%; }
 .table-heading { margin-bottom: 10px; }
 .table-panel > .action-row { margin-top: 10px; padding-top: 12px; }
 .table-panel > .rack-panel { margin-top: 14px; padding: 14px; background: #f4f8f1; border: 1px solid #cad6ca; min-height: 0; }

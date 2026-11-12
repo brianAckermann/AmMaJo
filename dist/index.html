@@ -6,8 +6,8 @@
     <meta name="theme-color" content="#163a35" />
     <title>AmMaJo · Hand practice</title>
     <meta name="description" content="A focused, solo American Mahjong hand-practice tool." />
-    <link rel="stylesheet" href="styles.css?v=20261111f" />
-    <link rel="stylesheet" href="tile-overrides.css?v=20261111f" />
+    <link rel="stylesheet" href="styles.css?v=20261111g" />
+    <link rel="stylesheet" href="tile-overrides.css?v=20261111g" />
   </head>
   <body>
     <main class="shell">
@@ -56,7 +56,8 @@
           <p id="helper-text" class="helper">Choose tiles that do not support the directions you want to keep. Jokers stay put.</p>
 
           <div class="table-grid">
-            <section class="table-panel" aria-labelledby="table-heading">
+            <div class="table-stack">
+              <section class="table-panel" aria-labelledby="table-heading">
               <p id="table-heading" class="eyebrow table-heading">TABLE</p>
               <section id="choice-zone" class="choice-zone hidden" aria-labelledby="choice-heading">
                 <div><p class="eyebrow">NEXT ACTION</p><h3 id="choice-heading">Claim the discard or draw from the wall.</h3></div>
@@ -70,11 +71,12 @@
                 <div class="panel-title"><h3 id="rack-heading">Your rack <span id="rack-count">13</span></h3><div class="rack-tools"><button id="auto-sort" class="text-button" type="button">Auto-sort</button><button id="sort-by-value" class="text-button" type="button" title="Group suited tiles by number across suits">By value</button><button id="mark-rejects" class="text-button" type="button" aria-pressed="false">Mark rejects</button><button id="customize-sort" class="text-button" type="button">Customize</button><button id="clear-selection" class="text-button" type="button">Clear</button></div></div>
                 <div id="rack" class="rack" aria-label="Your tiles"></div>
               </section>
-            </section>
+              </section>
+              <button id="declare-button" class="declare" disabled>Declare Mahjong</button>
+            </div>
             <aside class="side-panel">
               <div class="round-card"><span class="mini-label">DECISIONS</span><strong id="decision-count">0</strong><span>made this hand</span></div>
               <div class="round-card"><span class="mini-label">TILES LEFT</span><strong id="deck-count">139</strong><span>in practice pool</span></div>
-              <button id="declare-button" class="declare" disabled>Declare Mahjong</button>
             </aside>
           </div>
 
@@ -118,6 +120,6 @@
         <div class="dialog-actions"><button value="cancel" class="button button-quiet">Cancel</button><button id="apply-sort" value="default" class="button">Apply &amp; sort</button></div>
       </form>
     </dialog>
-    <script src="app.js?v=20261111f"></script>
+    <script src="app.js?v=20261111g"></script>
   </body>
 </html>
